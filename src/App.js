@@ -47,15 +47,12 @@ function App() {
     );
   }
 
-
   return (
     <div>
-      <h2>Let's get started!</h2>
-      
-        {expenseItems}
-      
-      
-    </div>
+    <h2>Let's get started!</h2>
+    {expenseItems}
+    
+  </div>
   );
 }
 
