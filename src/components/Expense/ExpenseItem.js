@@ -2,21 +2,19 @@ import ExpenseDate from './ExpenseDate';
 import ExpenseDetails from './ExpenseDetails';
 import Card from '../UI/Card'
 import './ExpenseItem.css';
-import React, { useState } from 'react';
+import React from 'react';
 
 const ExpenseItem = (props) => {
 
-  const [amount, setAmount] = useState(props.amount)
-
-  const amountHandler = () => {
-    setAmount('$100')
-    console.log(amount)
+  const deleteHandler = () => {
+    props.onDelete(props.id);
   }
+
   return (
     <Card className='expense-item'>
       <ExpenseDate date={props.date} />
-      <ExpenseDetails amount={amount}  location={props.location}   title={props.title} />
-      <button onClick={amountHandler}>Edit Amount</button>
+      <ExpenseDetails amount={props.amount}  location={props.location}   title={props.title} />
+      <button onClick={deleteHandler}>Edit Amount</button>
     </Card>
   );
 }
