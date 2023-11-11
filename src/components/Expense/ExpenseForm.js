@@ -25,6 +25,7 @@ const ExpenseForm = () => {
     setEnteredDate(event.target.value);
   }
 
+  //Function to handle Submission
   const submitHandler = (event) => {
     event.preventDefault();
     
