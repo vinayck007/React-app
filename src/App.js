@@ -1,6 +1,7 @@
 import ExpenseItem from './components/Expense/ExpenseItem';
 import React, { useState } from 'react';
-import ExpenseForm from './components/Expense/ExpenseForm';
+import NewExpense from './components/NewExpense/NewExpense';
+import Expenses from './components/Expense/Expenses'
 
 const App = () => {
   const [expenses, setExpenses] = useState([
@@ -34,10 +35,6 @@ const App = () => {
     },
   ]);
 
-
-  
-    
-
   const deleteExpenseHandler = (id) => {
     const updatedExpenses = expenses.filter((expense) => expense.id !== id);
     setExpenses(updatedExpenses);
@@ -54,11 +51,15 @@ const App = () => {
     />
   ));
 
+  const addExpenseHandler = expense => {
+    console.log('In App.js')
+    console.log(expense)
+  }
+
   return (
     <div>
-      <h2>Let's get started!</h2>
-      <ExpenseForm  />
-      {expenseItems}
+      <NewExpense onAddExpense={addExpenseHandler} />
+      <Expenses items={expenses} />
     </div>
   );
 };
