@@ -1,66 +1,55 @@
-import ExpenseItem from './components/Expense/ExpenseItem';
 import React, { useState } from 'react';
-import NewExpense from './components/NewExpense/NewExpense';
-import Expenses from './components/Expense/Expenses'
 
-const Dummy_Expenses = [
-  {
-    id: 'e1',
-    title: 'Toilet Paper',
-    amount: 94.12,
-    date: new Date(2020, 7, 14),
-    location: 'Shop'
-  },
-  {
-    id: 'e2',
-    title: 'New TV',
-    amount: 799.49,
-    date: new Date(2021, 2, 12),
-    location: 'Hyper Market'
-  },
-  {
-    id: 'e3',
-    title: 'Movie',
-    amount: 294.67,
-    date: new Date(2021, 2, 28),
-    location: 'Theatre'
-  },
-  {
-    id: 'e4',
-    title: 'New York',
-    amount: 450,
-    date: new Date(2021, 5, 12),
-    location: 'Travel'
-  },
-]
+import CourseGoalList from './components/CourseGoals/CourseGoalList/CourseGoalList';
+import CourseInput from './components/CourseGoals/CourseInput/CourseInput';
+import './App.css';
 
 const App = () => {
-  const [expenses, setExpenses] = useState(Dummy_Expenses);
+  const [courseGoals, setCourseGoals] = useState([
+    { text: 'Do all exercises!', id: 'g1' },
+    { text: 'Finish the course!', id: 'g2' }
+  ]);
 
-  const deleteExpenseHandler = (id) => {
-    const updatedExpenses = expenses.filter((expense) => expense.id !== id);
-    setExpenses(updatedExpenses);
+  const addGoalHandler = enteredText => {
+    setCourseGoals(prevGoals => {
+      const updatedGoals = [...prevGoals];
+      updatedGoals.unshift({ text: enteredText, id: Math.random().toString() });
+      return updatedGoals;
+    });
   };
 
-  const expenseItems = expenses.map((expense) => (
-    <ExpenseItem
-      id={expense.id} 
-      title={expense.title}
-      amount={expense.amount}
-      date={expense.date}
-      location={expense.location}
-      onDelete={deleteExpenseHandler}
-    />
-  ));
+  const deleteItemHandler = goalId => {
+    setCourseGoals(prevGoals => {
+      const updatedGoals = prevGoals.filter(goal => goal.id !== goalId);
+      return updatedGoals;
+    });
+  };
 
-  const addExpenseHandler = expense => {
-    setExpenses((prevExpenses) => [expense, ...prevExpenses]);
+  let content = (
+    <p style={{ textAlign: 'center' }}>No goals found. Maybe add one?</p>
+  );
+
+  if (courseGoals.length > 0) {
+    content = (
+      <CourseGoalList items={courseGoals} onDeleteItem={deleteItemHandler} />
+    );
   }
 
   return (
     <div>
-      <NewExpense onAddExpense={addExpenseHandler} />
-      <Expenses items={expenses} />
+      <section id="goal-form">
+        <CourseInput onAddGoal={addGoalHandler} />
+      </section>
+      <section id="goals">
+        {content}
+        {/* {courseGoals.length > 0 && (
+          <CourseGoalList
+            items={courseGoals}
+            onDeleteItem={deleteItemHandler}
+          />
+        ) // <p style={{ textAlign: 'center' }}>No goals found. Maybe add one?</p>
+        } */}
+      </section>
     </div>
   );
 };
