@@ -1,0 +1,13 @@
+
+.person-item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.person-item:hover {
+  background-color: #f9f9f9;
+}
+

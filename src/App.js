@@ -1,55 +1,83 @@
 import React, { useState } from 'react';
-
-import CourseGoalList from './components/CourseGoals/CourseGoalList/CourseGoalList';
-import CourseInput from './components/CourseGoals/CourseInput/CourseInput';
+import PersonList from './components/AddPerson/PersonList';
+import PersonInput from './components/AddPerson/PersonInput';
+import ErrorModal from './components/UI/ErrorModal';
 import './App.css';
 
 const App = () => {
-  const [courseGoals, setCourseGoals] = useState([
-    { text: 'Do all exercises!', id: 'g1' },
-    { text: 'Finish the course!', id: 'g2' }
-  ]);
+  const [persons, setPersons] = useState([]);
+  const [error, setError] = useState(null);
 
-  const addGoalHandler = enteredText => {
-    setCourseGoals(prevGoals => {
-      const updatedGoals = [...prevGoals];
-      updatedGoals.unshift({ text: enteredText, id: Math.random().toString() });
-      return updatedGoals;
+  const addPersonHandler = (enteredName, enteredAge) => {
+    // Validate if both name and age are provided
+    if (!enteredName || !enteredAge) {
+      // Handle case where either name or age is missing
+      showError("Please provide both name and age.");
+      return;
+    }
+
+    const name = enteredName.trim();
+    const age = parseInt(enteredAge, 10);
+
+    // Validate if age is a positive number
+    if (isNaN(age) || age < 0 || age > 120) {
+      showError("Please enter a valid, positive age less than 120.");
+      return;
+    }
+
+    const newPerson = {
+      name: name,
+      age: age,
+      id: Math.random().toString(), // A simple way to generate a unique ID
+    };
+
+    setPersons((prevPersons) => [...prevPersons, newPerson]);
+    showSuccess("Person details added successfully!");
+  };
+
+  const deletePersonHandler = (personId) => {
+    setPersons((prevPersons) => {
+      const updatedPersons = prevPersons.filter((person) => person.id !== personId);
+      return updatedPersons;
     });
   };
 
-  const deleteItemHandler = goalId => {
-    setCourseGoals(prevGoals => {
-      const updatedGoals = prevGoals.filter(goal => goal.id !== goalId);
-      return updatedGoals;
-    });
+  const showError = (message) => {
+    setError({ type: 'error', message: message });
+  };
+
+  const showSuccess = (message) => {
+    setError({ type: 'success', message: message });
+  };
+
+  const closeModal = () => {
+    setError(null);
   };
 
   let content = (
-    <p style={{ textAlign: 'center' }}>No goals found. Maybe add one?</p>
+    <p style={{ textAlign: 'center' }}>No person found. Maybe add one?</p>
   );
 
-  if (courseGoals.length > 0) {
+  if (persons.length > 0) {
     content = (
-      <CourseGoalList items={courseGoals} onDeleteItem={deleteItemHandler} />
+      <PersonList persons={persons} onDeletePerson={deletePersonHandler} />
     );
   }
 
   return (
     <div>
-      <section id="goal-form">
-        <CourseInput onAddGoal={addGoalHandler} />
+      <section id="person-form">
+        <PersonInput onAddPerson={addPersonHandler} />
       </section>
-      <section id="goals">
+      <section id="person">
         {content}
-        {/* {courseGoals.length > 0 && (
-          <CourseGoalList
-            items={courseGoals}
-            onDeleteItem={deleteItemHandler}
-          />
-        ) // <p style={{ textAlign: 'center' }}>No goals found. Maybe add one?</p>
-        } */}
       </section>
+      {error && (
+        <ErrorModal
+          message={error.message}
+          onClose={closeModal}
+        />
+      )}
     </div>
   );
 };
