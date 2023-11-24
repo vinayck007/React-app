@@ -3,7 +3,6 @@ import React from 'react';
 import './PersonelDetails.css';
 
 const Person = props => {
-  // const [deleteText, setDeleteText] = useState('');
 
   const deleteHandler = () => {
     // setDeleteText('(Deleted!)');

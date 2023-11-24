@@ -1,44 +1,42 @@
-import React, { useState } from 'react';
-import './PersonInput.css';
+import React, { useRef } from 'react';
 
-const PersonInput = ({ onAddPerson }) => {
-  const [enteredName, setEnteredName] = useState('');
-  const [enteredAge, setEnteredAge] = useState('');
+import Card from '../UI/Card';
+import Button from '../UI/Button';
+import Wrapper from '../Helpers/Wrapper';
+import classes from './PersonInput.css';
 
-  const submitHandler = (event) => {
+const AddUser = (props) => {
+  const nameInputRef = useRef();
+  const ageInputRef = useRef();
+  const collegeInputRef = useRef()
+
+  const addUserHandler = (event) => {
     event.preventDefault();
+    const enteredName = nameInputRef.current.value;
+    const enteredUserAge = ageInputRef.current.value;
+    const enteredCollegeName = collegeInputRef.current.value
 
-    onAddPerson(enteredName, enteredAge);
-
-    // Clear the input fields after submitting
-    setEnteredName('');
-    setEnteredAge('');
+    props.onAddPerson(enteredName, enteredUserAge, enteredCollegeName);
+    nameInputRef.current.value = '';
+    ageInputRef.current.value = '';
+    collegeInputRef.current.value = ''
   };
 
   return (
-    <form onSubmit={submitHandler}>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          id="name"
-          value={enteredName}
-          onChange={(e) => setEnteredName(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="age">Age:</label>
-        <input
-          type="number"
-          id="age"
-          value={enteredAge}
-          onChange={(e) => setEnteredAge(e.target.value)}
-        />
-      </div>
-      <button type="submit">Add Person</button>
-    </form>
+    <Wrapper>
+      <Card className={classes.input}>
+        <form onSubmit={addUserHandler}>
+          <label htmlFor="username">Username</label>
+          <input id="username" type="text" ref={nameInputRef} />
+          <label htmlFor="age">Age (Years)</label>
+          <input id="age" type="number" ref={ageInputRef} />
+          <label htmlFor="collegename">College Name</label>
+          <input id="username" type="text" ref={collegeInputRef} />
+          <Button type="submit">Add User</Button>
+        </form>
+      </Card>
+    </Wrapper>
   );
 };
 
-
-export default PersonInput;
+export default AddUser;

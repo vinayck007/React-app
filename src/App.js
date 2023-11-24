@@ -8,7 +8,7 @@ const App = () => {
   const [persons, setPersons] = useState([]);
   const [error, setError] = useState(null);
 
-  const addPersonHandler = (enteredName, enteredAge) => {
+  const addPersonHandler = (enteredName, enteredAge, enteredCollegeName) => {
     // Validate if both name and age are provided
     if (!enteredName || !enteredAge) {
       // Handle case where either name or age is missing
@@ -18,6 +18,7 @@ const App = () => {
 
     const name = enteredName.trim();
     const age = parseInt(enteredAge, 10);
+    const college = enteredCollegeName.trim()
 
     // Validate if age is a positive number
     if (isNaN(age) || age < 0 || age > 120) {
@@ -28,6 +29,7 @@ const App = () => {
     const newPerson = {
       name: name,
       age: age,
+      college: college,
       id: Math.random().toString(), // A simple way to generate a unique ID
     };
 
