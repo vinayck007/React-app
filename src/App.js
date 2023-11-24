@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PersonList from './components/AddPerson/PersonList';
 import PersonInput from './components/AddPerson/PersonInput';
 import ErrorModal from './components/UI/ErrorModal';
@@ -7,6 +7,17 @@ import './App.css';
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [error, setError] = useState(null);
+  const [enteredName, setEnteredName] = useState('');
+  const [enteredAge, setEnteredAge] = useState('');
+  const [enteredCollegeName, setEnteredCollegeName] = useState('');
+
+  useEffect(() => {
+    if (!enteredCollegeName) {
+      showError("Please provide a college name.");
+    } else {
+      closeModal();
+    }
+  }, [enteredCollegeName]);
 
   const addPersonHandler = (enteredName, enteredAge, enteredCollegeName) => {
     // Validate if both name and age are provided
@@ -18,7 +29,7 @@ const App = () => {
 
     const name = enteredName.trim();
     const age = parseInt(enteredAge, 10);
-    const college = enteredCollegeName.trim()
+    const college = enteredCollegeName.trim();
 
     // Validate if age is a positive number
     if (isNaN(age) || age < 0 || age > 120) {
@@ -26,11 +37,17 @@ const App = () => {
       return;
     }
 
+    // Validate if college name is provided
+    if (!college) {
+      showError("Please provide a college name.");
+      return;
+    }
+
     const newPerson = {
       name: name,
       age: age,
       college: college,
-      id: Math.random().toString(), // A simple way to generate a unique ID
+      id: Math.random().toString(),
     };
 
     setPersons((prevPersons) => [...prevPersons, newPerson]);
@@ -69,7 +86,15 @@ const App = () => {
   return (
     <div>
       <section id="person-form">
-        <PersonInput onAddPerson={addPersonHandler} />
+        <PersonInput
+          onAddPerson={(name, age, college) => addPersonHandler(name, age, college)}
+          enteredName={enteredName}
+          setEnteredName={setEnteredName}
+          enteredAge={enteredAge}
+          setEnteredAge={setEnteredAge}
+          enteredCollegeName={enteredCollegeName}
+          setEnteredCollegeName={setEnteredCollegeName}
+        />
       </section>
       <section id="person">
         {content}
