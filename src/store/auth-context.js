@@ -1,7 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 
 const AuthContext = React.createContext({
-  isLoggedIn : false
-})
+  isLoggedIn: false,
+  onLogout: () => {},
+  onLogin: (email, password) => {}
+});
 
-export default AuthContext
+export const AuthContextProvider = (props) => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const logoutHandler = () => {
+    setIsLoggedIn(false); // Corrected to set isLoggedIn to false
+  };
+
+  const loginHandler = () => {
+    setIsLoggedIn(true);
+  };
+
+  return (
+    <AuthContext.Provider
+      value={{
+        isLoggedIn: isLoggedIn,
+        onLogout: logoutHandler,
+        onLogin: loginHandler, // Corrected method name
+      }}
+    >
+      {props.children}
+    </AuthContext.Provider>
+  );
+};
+
+export default AuthContext;
