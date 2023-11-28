@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React from 'react'; //
 
 const TotalPrice = ({ products }) => {
   const totalPrice = products.reduce((total, product) => total + product.price, 0);
