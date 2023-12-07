@@ -1,32 +1,38 @@
-import React, { useCallback, useState, useMemo } from "react";
-import Button from './UI/Button/Button'
-import DemoList from "./components/Demo/DemoList";
-import classes from './App.module.css';
+import React, { useState } from 'react';
+
+import MoviesList from './components/MoviesList';
+import './App.css';
 
 function App() {
-  const [listTitle, setListTitle] = useState('My List');
-  const [isDescending, setIsDescending] = useState(false);
+  const [movies, setMovies] = useState([]);
 
-  const changeTitleHandler = useCallback(() => {
-    setListTitle('New Title');
-  }, []);
+  async function fetchMoviesHandler() {
+    try {
+      const response = await fetch('https://swapi.dev/api/films/');
+      const data = await response.json();
 
-  const toggleOrderHandler = useCallback(() => {
-    setIsDescending((prevIsDescending) => !prevIsDescending);
-  }, []);
+      const transformedMovies = data.results.map((movieData) => ({
+        id: movieData.episode_id,
+        title: movieData.title,
+        openingText: movieData.opening_crawl,
+        releaseDate: movieData.release_date, // Fix typo: release_date
+      }));
 
-  const initialItems = useMemo(() => [5, 6, 1, 9, 8], []);
-
-  console.log('App Running');
+      setMovies(transformedMovies);
+    } catch (error) {
+      console.error('Error fetching movies:', error);
+    }
+  }
 
   return (
-    <div className={classes.app}>
-      <DemoList title={listTitle} items={initialItems} isDescending={isDescending} />
-      <Button onClick={changeTitleHandler}>Change List Title</Button>
-      <Button onClick={toggleOrderHandler}>
-        {isDescending ? 'Change to Ascending Order' : 'Change to Descending Order'}
-      </Button>
-    </div>
+    <React.Fragment>
+      <section>
+        <button onClick={fetchMoviesHandler}>Fetch Movies</button>
+      </section>
+      <section>
+        <MoviesList movies={movies} />
+      </section>
+    </React.Fragment>
   );
 }
 
