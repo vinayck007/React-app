@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import MoviesList from './components/MoviesList';
 import Loader from './components/Loader';
 import './App.css';
@@ -6,11 +6,20 @@ import './App.css';
 function App() {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isRetrying, setIsRetrying] = useState(false);
+  const [retryInterval, setRetryInterval] = useState(null);
   const [error, setError] = useState(null);
-  const [fetchClicked, setFetchClicked] = useState(false);
 
-  const fetchMoviesHandler = async () => {
+  const retry = useCallback(() => {
+    setRetryInterval(setInterval(fetchMoviesHandler, 5000));
+  }, []);
+
+  const cancelRetry = useCallback(() => {
+    clearInterval(retryInterval);
+    setRetryInterval(null);
+    setError(null);
+  }, [retryInterval]);
+
+  const fetchMoviesHandler = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -19,7 +28,7 @@ function App() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error('Something went wrong ... Retrying...');
+        throw new Error('Something Went Wrong! Retrying...');
       }
 
       const transformedMovies = data.results.map((movieData) => ({
@@ -33,38 +42,38 @@ function App() {
     } catch (error) {
       console.error('Error fetching movies:', error);
       setError(error.message);
-      setIsRetrying(true);
-
-      setTimeout(() => {
-        setIsRetrying(false);
-        fetchMoviesHandler();
-      }, 5000);
+      retry();
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [retry]);
 
   useEffect(() => {
-    if (fetchClicked) {
-      fetchMoviesHandler();
-      setFetchClicked(false);
-    }
-  }, [fetchClicked]);
+    fetchMoviesHandler(); // Initial fetch
+  }, [fetchMoviesHandler]);
 
   return (
     <React.Fragment>
       <section>
-        <button onClick={() => setFetchClicked(true)} disabled={isRetrying}>
+        <button onClick={() => fetchMoviesHandler()}>
           Fetch Movies
         </button>
       </section>
       <section>
         {isLoading && <Loader />}
         {!isLoading && error && <p>{error}</p>}
-        {!isLoading && movies.length === 0 && !error && !isRetrying && (
+        {!isLoading && movies.length === 0 && retryInterval && (
+          <p>Retrying...</p>
+        )}
+        {!isLoading && movies.length === 0 && !error && !retryInterval && (
           <p>No Movies Found!</p>
         )}
         {!isLoading && movies.length > 0 && <MoviesList movies={movies} />}
+        {retryInterval && (
+          <button onClick={cancelRetry} disabled={isLoading}>
+            Cancel Retry
+          </button>
+        )}
       </section>
     </React.Fragment>
   );
