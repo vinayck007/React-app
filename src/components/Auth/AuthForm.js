@@ -14,7 +14,7 @@ const AuthForm = () => {
     setIsLogin((prevState) => !prevState);
   };
 
-  const submitHandler = (event) => {
+  const submitHandler = async (event) => {
     event.preventDefault();
 
     const enteredEmail = emailInputRef.current.value;
@@ -22,12 +22,37 @@ const AuthForm = () => {
 
     setIsLoading(true);
 
-    // Simulate a delay (you can replace this with your actual API call)
-    setTimeout(() => {
-      // Simulate signup failure
+    try {
+      const response = await fetch(
+        `https://identitytoolkit.googleapis.com/v1/accounts:${
+          isLogin ? 'signInWithPassword' : 'signUp'
+        }?key=AIzaSyBcXaTkdRyb--LJgi1urut9jM9gdsSDpOM`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            email: enteredEmail,
+            password: enteredPassword,
+            returnSecureToken: true,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error.message || 'Authentication failed!');
+      }
+
+      // Handle successful login/signup
+      console.log(data);
+    } catch (error) {
+      setFeedback(error.message);
+    } finally {
       setIsLoading(false);
-      setFeedback('Signup failed. Please try again.'); // Set the feedback message
-    }, 2000);
+    }
   };
 
   return (
