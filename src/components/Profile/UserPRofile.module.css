@@ -1,0 +1,16 @@
+/* UserProfile.module.css */
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Set the height to 100% of the viewport height */
+}
+
+.profile-content {
+  /* Add styles for the profile content */
+  max-width: 600px; /* Set a maximum width for the content */
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}

@@ -1,7 +1,8 @@
 // AuthForm.js
 import React, { useState, useRef } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import classes from './AuthForm.module.css';
+import { useAuth } from './AuthContext';
 
 const AuthForm = () => {
   const emailInputRef = useRef();
@@ -9,6 +10,8 @@ const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState(null);
+  const {login} = useAuth()
+  const navigate = useNavigate()
 
   const switchAuthModeHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -47,6 +50,8 @@ const AuthForm = () => {
       }
 
       // Handle successful login/signup
+      login(data.idToken)
+      navigate('/profile')
       console.log(data);
     } catch (error) {
       setFeedback(error.message);
