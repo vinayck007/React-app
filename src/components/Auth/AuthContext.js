@@ -1,32 +1,38 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+// AuthContext.js
 
-const AuthContext = createContext();
+import React, { createContext, useContext, useState, useEffect } from 'react';
+
+export const AuthContext = createContext({
+  token: '',
+  isLoggedIn: false,
+  login: (token) => {},
+  logout: () => {},
+});
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+console.log(isLoggedIn)
+useEffect(() => {
+  console.log('useEffect triggered. isLoggedIn:', isLoggedIn);
+  const storedToken = localStorage.getItem('firebaseToken');
+  if (storedToken) {
+    setIsLoggedIn(true);
+  }
+}, [isLoggedIn]);
 
-  useEffect(() => {
-    // Check local storage for an existing token when the component mounts
-    const storedToken = localStorage.getItem('firebaseToken');
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
 
   const login = (userToken) => {
-    setToken(userToken);
-    // Save the token to local storage
+    setIsLoggedIn(true);
     localStorage.setItem('firebaseToken', userToken);
   };
 
   const logout = () => {
-    setToken(null);
-    // Remove the token from local storage on logout
+    setIsLoggedIn(false);
     localStorage.removeItem('firebaseToken');
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
