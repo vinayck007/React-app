@@ -2,6 +2,7 @@
 import React from 'react';
 import { useAuth } from '../Auth/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import ChangePasswordForm from '../Auth/ChangePasswordForm'
 import classes from './UserProfile.module.css'
 
 const UserProfile = () => {
@@ -21,6 +22,7 @@ const UserProfile = () => {
       <div className={classes['profile-content']}>
         <h2>User Profile</h2>
         <p>Welcome</p>
+        <ChangePasswordForm/>
         <button onClick={handleLogout}>Logout</button>
     </div>
     </div>
