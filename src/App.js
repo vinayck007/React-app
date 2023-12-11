@@ -1,9 +1,9 @@
-// App.js
-import React, { useContext, useEffect } from 'react';
+
+import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './Pages/AuthPage';
 import HomePage from './Pages/HomePage';
-import { AuthContext, AuthProvider, useAuth } from './components/Auth/AuthContext';
+import { AuthContext } from './components/Auth/AuthContext';
 import Layout from './components/Layout/Layout';
 import UserProfile from './components/Profile/UserProfile';
 

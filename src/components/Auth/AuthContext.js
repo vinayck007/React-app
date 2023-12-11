@@ -14,17 +14,31 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(!!storedToken);
 
   useEffect(() => {
-    // Update local storage when token changes
-    localStorage.setItem('firebaseToken', token);
-    setIsLoggedIn(!!token);
-  }, [token]);
+    const handleAutoLogout = () => {
+      const inactivityTimeout = setTimeout(() => {
+        logout();
+      }, 20000); 
+
+      return () => {
+        clearTimeout(inactivityTimeout);
+      };
+    };
+
+    if (isLoggedIn) {
+      handleAutoLogout(); 
+    }
+
+  }, [token, isLoggedIn]);
 
   const login = (userToken) => {
     setToken(userToken);
+    setIsLoggedIn(true);
   };
 
   const logout = () => {
     setToken('');
+    setIsLoggedIn(false);
+    localStorage.removeItem('firebaseToken');
   };
 
   return (
